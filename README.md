@@ -38,21 +38,21 @@ There are three computers involved in this system. The first computer is an ESP3
 <img src="./imgs/esp32_data_acquisiton_2.JPG" width=40% height=50%>
 
 
-- ./main/main.c
+- ~/data_acquisition/main/main.c
 - This ESP32 is responsible for 
     1. Retrieving data from the ToF Sensor
     2. Sending this data using ESPNOW to the Data Bridge ESP32
 
 ### Data Bridge ESP32
 
-- ./examples/data_bridge/main/main.c
+- ~/data_bridge/main/main.c
 - This ESP32 is responsible for 
     1. Receiving data through ESPNOW
     2. Routing this received data to a wired serial UART connection (host computer)
 
 ### Camera Cart Computer
 
-- ./examples/serial_rx_python/main.py 
+- ~host_python/main.py 
 - This Python script is responsible for 
     1. Receiving data through a wired UART connection
     2. Transforming the data into a cartesian coordinate system relative to the sensor (see /docs/sensor_fov_description.pdf)
