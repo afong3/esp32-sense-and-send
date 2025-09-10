@@ -48,8 +48,11 @@ void app_main(void)
   esp_now_add_peer(&peer_info);
   while(1)
   {
-    esp_err_t err = esp_now_send(esp_mac, (uint8_t *) "Sending via ESP-NOW", strlen("Sending via ESP-NOW"));
-        ESP_LOGI(TAG,"esp now status : %s", esp_err_to_name(err));
+    // esp_err_t err = esp_now_send(esp_mac, (uint8_t *) "Sending via ESP-NOW", strlen("Sending via ESP-NOW"));
+    const uint8_t message[] = "Message sent from data acqusition";
+
+    esp_err_t err = esp_now_send(esp_mac, message, strlen((char *)message));   
+    ESP_LOGI(TAG,"esp now status : %s", esp_err_to_name(err));
 
     vTaskDelay(pdMS_TO_TICKS(1000));
   }
