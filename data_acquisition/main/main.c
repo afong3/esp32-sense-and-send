@@ -160,17 +160,18 @@ void app_main(void)
     printf("VL53L5CX ULD ready ! (Version : %s)\n",
            VL53L5CX_API_REVISION);
 
-    vl53l5cx_set_ranging_frequency_hz(&Dev, 30); // Set frequency to 30Hz
+    vl53l5cx_set_ranging_frequency_hz(&Dev, 5); // Set frequency to 5Hz
+    vl53l5cx_set_resolution(&Dev, VL53L5CX_RESOLUTION_8X8); // Set resolution to 4x4
 
+    loop = 0;
     /*********************************/
     /*         Ranging loop          */
     /*********************************/
 
     status = vl53l5cx_start_ranging(&Dev);
 
-    loop = 0;
     esp_now_start(); 
-    while(loop < 1000)
+    while(1)
     {
         /* Use polling function to know when a new measurement is ready.
          * Another way can be to wait for HW interrupt raised on PIN A1
@@ -186,7 +187,7 @@ void app_main(void)
              * print */
             printf("Print data no : %3u\n", Dev.streamcount);
             char message[32];
-            for(i = 0; i < 16; i++)
+            for(i = 0; i < 64; i++)
             {
                 snprintf(message, sizeof(message), "Z%3d  S%3u  D%4d mm\n",
                        i,
