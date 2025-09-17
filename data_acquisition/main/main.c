@@ -68,7 +68,7 @@
 * a ranging to capture 10 frames.
 *
 * By default, ULD is configured to have the following settings :
-* - Resolution 4x4
+* - Resolution 8x8
 * - Ranging period 1Hz
 *
 * In this example, we also suppose that the number of target per zone is
@@ -200,7 +200,7 @@ void app_main(void)
 
             for(i = 0; i < 64; i++)
             {
-                snprintf(message, sizeof(message), "{'T':%lu, 'Z':%d,'S':%u,'X':%.0f,'Y':%.0f,'Z':%.0f}\n",
+                snprintf(message, sizeof(message), "{'T':%lu, 'I':%d,'S':%u,'X':%.0f,'Y':%.0f,'Z':%.0f}\n",
                        timestamp,
                        i,
                        Results.target_status[i],
