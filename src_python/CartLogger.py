@@ -2,19 +2,19 @@
 This module is to handle the data logging from the cart system's position.
 """
 import threading
-import sys
-import os
 import CameraCart
 import numpy as np
+import time
 
 class CartLogger:
-    def __init__(self):
+    def __init__(self, sample_rate_hz = 2):
         self._cc = CameraCart.CameraCart()
         self._flag_record = False
         self._thread = None
         self._timestamps = []
         self._y_positions = []
         self._start_timestamp = None
+        self.sample_rate_hz = sample_rate_hz
 
     def start_recording(self):
         self._flag_record = True
@@ -25,7 +25,8 @@ class CartLogger:
         while self._flag_record:
             query_time, position = self._cc.get_position()
             self.record_data_point(query_time, position)
-            
+            time.sleep(1 / self.sample_rate_hz)
+           
     def stop_recording(self):
         self._flag_record = False
         self._thread.join()
@@ -42,7 +43,7 @@ class CartLogger:
         if self._start_timestamp is None:
             self._start_timestamp = timestamp
             self._timestamps.append(0)
-            self._y_positions.append(y_position)       
+            self._y_positions.append(y_position)      
         else:
             self._timestamps.append(timestamp - self._start_timestamp)
             self._y_positions.append(y_position)
@@ -58,4 +59,4 @@ def main():
     print(data)
 
 if __name__ == "__main__":
-    main() 
+    main()
