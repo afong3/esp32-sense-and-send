@@ -79,6 +79,8 @@
 #include <string.h>
 #include <stdio.h>
 #include "vl53l5cx_api.h"
+#include "plane_algo.h"
+#include "esp_log_timestamp.h"
 
 void esp_now_start(void);
 void esp_now_tx(uint8_t *message);
@@ -169,6 +171,12 @@ void app_main(void)
     /*********************************/
 
     status = vl53l5cx_start_ranging(&Dev);
+   
+    /*********************************/
+    /*         XYZ Computations      */
+    /*********************************/
+    ComputeSinCosTables();
+    XYZ_ZoneCoordinates_t XYZ_ZoneCoordinates;
 
     esp_now_start(); 
     while(1)
@@ -186,13 +194,20 @@ void app_main(void)
              * of 16 zones to print. For this example, only the data of first zone are
              * print */
             printf("Print data no : %3u\n", Dev.streamcount);
-            char message[32];
+            char message[64];
+            uint32_t timestamp = esp_log_timestamp();
+            ConvertDist2XYZCoords8x8(&Results, &XYZ_ZoneCoordinates);
+
             for(i = 0; i < 64; i++)
             {
-                snprintf(message, sizeof(message), "Z%3d  S%3u  D%4d mm\n",
+                snprintf(message, sizeof(message), "{'T':%lu, 'Z':%d,'S':%u,'X':%.0f,'Y':%.0f,'Z':%.0f}\n",
+                       timestamp,
                        i,
-                       Results.target_status[VL53L5CX_NB_TARGET_PER_ZONE*i],
-                       Results.distance_mm[VL53L5CX_NB_TARGET_PER_ZONE*i]);
+                       Results.target_status[i],
+                       XYZ_ZoneCoordinates.Xpos[i],
+                       XYZ_ZoneCoordinates.Ypos[i],
+                       XYZ_ZoneCoordinates.Zpos[i]
+                       );
                 esp_now_tx((uint8_t *)message);
 
             }
